@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 
 import {
   ChatContainer,
@@ -8,15 +8,32 @@ import {
   MessageBubble,
 } from "./styles";
 
+import { useChat } from "../../services/socket";
+
 import SendIcon from "../../assets/images/send-icon.svg";
 import UserImage from "../../assets/images/otto.jpeg";
 
 const Chat = () => {
+  const chat = useChat();
+
   const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
 
-  // const sendMessage = (msg) => {
+  useEffect(() => {
+    chat.listen("response", (message) => {
+      // setMessages(message);
+      console.log(message);
+    });
+  }, [chat]);
 
-  // };
+  const sendMessage = useCallback(() => {
+    chat.sendMessage({
+      text: newMessage,
+      media: [
+        "https://images.unsplash.com/photo-1593753063521-afa3771f2c81?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80",
+      ],
+    });
+  }, [chat, newMessage]);
 
   return (
     <ChatContainer>
@@ -76,10 +93,12 @@ const Chat = () => {
           rows="3"
           placeholder="Escreva uma mensagem..."
           className="message"
+          value={newMessage}
+          onChange={(event) => setNewMessage(event.target.value)}
         />
-        <span className="button" role="presentation" onClick={() => {}}>
+        <button onClick={sendMessage} className="button" type="button">
           <img src={SendIcon} alt="send" />
-        </span>
+        </button>
       </ChatFooter>
     </ChatContainer>
   );

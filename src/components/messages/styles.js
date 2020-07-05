@@ -58,7 +58,7 @@ const ChatMessages = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding: 75px 20px 15px 20px;
+  padding: 40px 20px 50px 20px;
   overflow-y: auto;
   background: linear-gradient(
     180deg,
@@ -114,6 +114,7 @@ const ChatFooter = styled.div`
     justify-content: center;
     align-items: center;
 
+    border: none;
     border-radius: 50%;
     background: #3ac1b7;
     box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.25);
