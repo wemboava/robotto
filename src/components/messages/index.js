@@ -85,6 +85,16 @@ const Chat = () => {
     const url = URL.createObjectURL(recordedBlob.blob);
 
     setAudio(url);
+    setMessages([
+      ...messages,
+      {
+        type: "audio",
+        yourself: true,
+        content: {
+          src: url,
+        },
+      },
+    ]);
     console.log("recordedBlob is: ", recordedBlob);
   };
 
@@ -122,7 +132,12 @@ const Chat = () => {
           return (
             // eslint-disable-next-line react/no-array-index-key
             <MessageBubble yourself={message.yourself} key={key}>
-              <p className="message">{message.text}</p>
+              {message.type === "audio" && (
+                <audio src={message.content.src} controls />
+              )}
+              {!message.type === "audio" && (
+                <p className="message">{message.text}</p>
+              )}
             </MessageBubble>
           );
         })}
