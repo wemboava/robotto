@@ -1,4 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
+import { ReactMic } from "react-mic";
+import { FaMicrophone } from "react-icons/fa";
 
 import {
   ChatContainer,
@@ -6,6 +8,7 @@ import {
   ChatHeader,
   ChatMessages,
   MessageBubble,
+  MicButton,
 } from "./styles";
 
 import QuestionBubble from "../questionBubble";
@@ -18,6 +21,8 @@ import UserImage from "../../assets/images/otto.jpeg";
 const Chat = () => {
   const chat = useChat();
 
+  const [record, setRecord] = useState(false);
+  const [audio, setAudio] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
 
@@ -27,6 +32,21 @@ const Chat = () => {
       console.log(message);
     });
   }, [chat]);
+
+  const handleRecording = () => {
+    setRecord(!record);
+  };
+
+  const onData = (recordedBlob) => {
+    console.log("chunk of real-time data is: ", recordedBlob);
+  };
+
+  const onStop = (recordedBlob) => {
+    const url = URL.createObjectURL(recordedBlob.blob);
+
+    setAudio(url);
+    console.log("recordedBlob is: ", recordedBlob);
+  };
 
   const sendMessage = useCallback(() => {
     chat.sendMessage({
@@ -78,7 +98,7 @@ const Chat = () => {
           <QuestionBubble />
         </MessageBubble>
         <MessageBubble yourself>
-          <p className="message">Livros</p>
+          <audio controls src={audio} />
         </MessageBubble>
       </ChatMessages>
 
@@ -90,10 +110,13 @@ const Chat = () => {
           value={newMessage}
           onChange={(event) => setNewMessage(event.target.value)}
         />
-        <button onClick={sendMessage} className="button" type="button">
-          <img src={SendIcon} alt="send" />
-        </button>
+        <MicButton type="button" onClick={handleRecording} isRecording={record}>
+          <FaMicrophone size={20} />
+        </MicButton>
       </ChatFooter>
+      <div style={{ display: "none" }}>
+        <ReactMic record={record} onStop={onStop} onData={onData} />
+      </div>
     </ChatContainer>
   );
 };

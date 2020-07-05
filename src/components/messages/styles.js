@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import bg from "../../assets/images/bg.svg";
 
@@ -122,4 +122,81 @@ const ChatFooter = styled.div`
   }
 `;
 
-export { ChatContainer, ChatHeader, ChatMessages, MessageBubble, ChatFooter };
+const MicButton = styled.button`
+  transition: background 0.4s ease-in-out, color 0.4s ease-in-out;
+
+  position: relative;
+
+  display: inline-block;
+
+  width: 45px;
+  height: 45px;
+  min-width: 45px;
+  min-height: 45px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: #fff;
+
+  border-radius: 50%;
+  border: none;
+  outline: none;
+
+  color: rgba(1, 1, 1, 0.5);
+
+  cursor: pointer;
+
+  &::before {
+    animation: spin 4s linear infinite;
+    transition: opacity 0.4s ease-in-out;
+
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 46px;
+    height: 46px;
+    min-width: 46px;
+    min-height: 46px;
+    margin: -0.4rem;
+    padding: -0.4rem;
+
+    background: transparent;
+    opacity: 0;
+
+    border-radius: 50%;
+    border: 0.4rem solid #2e748f;
+    border-top-color: transparent;
+  }
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  ${(props) =>
+    props.isRecording &&
+    css`
+      background: #ed6a5f;
+      color: #fff;
+
+      &::before {
+        opacity: 1;
+      }
+    `}
+`;
+
+export {
+  ChatContainer,
+  ChatHeader,
+  ChatMessages,
+  MessageBubble,
+  ChatFooter,
+  MicButton,
+};
