@@ -1,11 +1,15 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 
+import { ReactMic } from "react-mic";
+import { FaMicrophone } from "react-icons/fa";
+
 import {
   ChatContainer,
   ChatFooter,
   ChatHeader,
   ChatMessages,
   MessageBubble,
+  MicButton,
   Tip,
 } from "./styles";
 
@@ -19,6 +23,8 @@ const chat = createChat();
 const ENTER = 13;
 
 const Chat = () => {
+  const [record, setRecord] = useState(false);
+  const [audio, setAudio] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const scroll = useRef(null);
@@ -66,8 +72,30 @@ const Chat = () => {
     scroll.current.scrollTop = scroll.current.scrollHeight;
   }, [messages]);
 
-  // useEffect(() => {
-  // }, [chat, messages]);
+  const handleRecording = () => {
+    setRecord(!record);
+  };
+
+  const onData = (recordedBlob) => {
+    console.log("chunk of real-time data is: ", recordedBlob);
+  };
+
+  const onStop = (recordedBlob) => {
+    const url = URL.createObjectURL(recordedBlob.blob);
+
+    setAudio(url);
+    setMessages([
+      ...messages,
+      {
+        type: "audio",
+        yourself: true,
+        content: {
+          src: url,
+        },
+      },
+    ]);
+    console.log("recordedBlob is: ", recordedBlob);
+  };
 
   return (
     <ChatContainer>
@@ -92,6 +120,7 @@ const Chat = () => {
           </svg>
         </div>
       </ChatHeader>
+
       <ChatMessages ref={scroll}>
         {messages.length === 0 ? (
           <Tip>
@@ -126,10 +155,13 @@ const Chat = () => {
           onChange={(event) => handleMessage(event.target.value)}
           onKeyDown={(event) => handleSend(event)}
         />
-        <button className="button" type="button">
-          <img src={SendIcon} alt="send" />
-        </button>
+        <MicButton type="button" onClick={handleRecording} isRecording={record}>
+          <FaMicrophone size={20} />
+        </MicButton>
       </ChatFooter>
+      <div style={{ display: "none" }}>
+        <ReactMic record={record} onStop={onStop} onData={onData} />
+      </div>
     </ChatContainer>
   );
 };
