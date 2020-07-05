@@ -87,10 +87,12 @@ const Chat = () => {
     setMessages([
       ...messages,
       {
-        type: "audio",
         yourself: true,
-        content: {
-          src: url,
+        media: {
+          type: "audio",
+          content: {
+            src: url,
+          },
         },
       },
     ]);
@@ -129,6 +131,12 @@ const Chat = () => {
         ) : null}
         {messages.map((message, key) => {
           switch (message.media.type) {
+            case "audio":
+              return (
+                <MessageBubble yourself={message.yourself}>
+                  <audio src={message.media.content.src} controls />
+                </MessageBubble>
+              );
             case "question":
               return (
                 <MessageBubble>
