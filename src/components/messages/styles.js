@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import bg from "../../assets/images/bg.png";
+import bg from "../../assets/images/bg.svg";
 
 const ChatContainer = styled.div`
   position: relative;
@@ -77,7 +77,7 @@ const MessageBubble = styled.div`
     props.yourself ? "15px 15px 0 15px" : "15px 15px 15px 0"};
   margin: ${(props) =>
     props.yourself ? "10px 0 10px auto" : "10px auto 10px 0"};
-  background: ${(props) => (props.yourself ? "#f1f1f1" : "#78f3e4")};
+  background: ${(props) => (props.yourself ? "#f1f1f1" : "#b6fff6")};
 
   & .message {
     padding: 10px;
