@@ -32,6 +32,7 @@ const Chat = () => {
       ...messages,
       {
         text: newMessage,
+        media: {},
         yourself: true,
       },
     ]);
@@ -52,20 +53,18 @@ const Chat = () => {
   }
 
   useEffect(() => {
-    // Scrolla pra baixo sempre
-    scroll.current.scrollTop = scroll.current.scrollHeight;
-
-    // Escutar a resposta do RobOtto
     chat.listen("response", (message) => {
       setMessages([
         ...messages,
         {
-          text: message,
+          text: message.text,
+          media: message.media,
           yourself: false,
         },
       ]);
     });
-  });
+    scroll.current.scrollTop = scroll.current.scrollHeight;
+  }, [messages]);
 
   // useEffect(() => {
   // }, [chat, messages]);
@@ -100,12 +99,21 @@ const Chat = () => {
           </Tip>
         ) : null}
         {messages.map((message, key) => {
-          return (
-            // eslint-disable-next-line react/no-array-index-key
-            <MessageBubble yourself={message.yourself} key={key}>
-              <p className="message">{message.text}</p>
-            </MessageBubble>
-          );
+          switch (message.media.type) {
+            case "question":
+              return (
+                <MessageBubble>
+                  <QuestionBubble key={key} question={message.media} />
+                </MessageBubble>
+              );
+            default:
+              return (
+                // eslint-disable-next-line react/no-array-index-key
+                <MessageBubble yourself={message.yourself} key={key}>
+                  <p className="message">{message.text}</p>
+                </MessageBubble>
+              );
+          }
         })}
       </ChatMessages>
 

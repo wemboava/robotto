@@ -2,31 +2,41 @@ import React, { useState } from "react";
 
 import { Container, Answer } from "./styles";
 
-const QuestionBubble = () => {
+const QuestionBubble = ({ question }) => {
   const [selectedAnswer, setSelectedAnswer] = useState();
+
+  function handleAnswer() {
+    if (selectedAnswer === question.answer) {
+      console.log("Questão certa!");
+    }
+  }
 
   return (
     <Container>
       <h4 className="title" role="img">
-        Pergunta de História <span>📜</span>
+        Pergunta de {question.subject} <span>📜</span>
       </h4>
-      <p className="question">Quem foi que descobriu o Brasil?</p>
+      <p className="question">{question.question}</p>
       <ul>
-        <Answer>
-          <input type="radio" name="question" id="1" value="1" />
-          <label htmlFor="1">a) Ela não estava coberta</label>
-        </Answer>
-        <Answer>
-          <input type="radio" name="question" id="2" value="2" />
-          <label htmlFor="2">b) Pedro Álvares Cabral</label>
-        </Answer>
-        <Answer>
-          <input type="radio" name="question" id="3" value="3" />
-          <label htmlFor="3">c) Bruno e Marrone</label>
-        </Answer>
+        {question.alternatives.map((alternative, key) => {
+          return (
+            <Answer>
+              <input
+                type="radio"
+                name="question"
+                onClick={() => setSelectedAnswer(key)}
+                id={key}
+                value={key}
+              />
+              <label htmlFor={key}>{alternative}</label>
+            </Answer>
+          );
+        })}
       </ul>
       <div className="actions">
-        <button type="button">Responder</button>
+        <button onClick={() => handleAnswer()} type="button">
+          Responder
+        </button>
       </div>
     </Container>
   );

@@ -14,7 +14,7 @@ export const Container = styled.div`
       color: #fff;
       background: linear-gradient(167deg, #8f4bd0, #ae57ff);
       padding: 8px 20px;
-      border-radius: 20px;
+      border-radius: 5px;
     }
   }
 `;
