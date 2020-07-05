@@ -43,7 +43,9 @@
     "react/jsx-props-no-spreading": "off",
     "no-restricted-globals": "off",
     "import/no-named-as-default-member": "off",
-    "import/no-named-as-default": "off"
+    "import/no-named-as-default": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "jsx-a11y/accessible-emoji": "off"
   },
   "settings": {
   }

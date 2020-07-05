@@ -10,6 +10,7 @@ import {
 } from "./styles";
 
 import { createChat } from "../../services/socket";
+import QuestionBubble from "../questionBubble";
 
 import SendIcon from "../../assets/images/send-icon.svg";
 import UserImage from "../../assets/images/otto.jpeg";
