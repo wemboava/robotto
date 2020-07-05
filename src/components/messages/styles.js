@@ -4,9 +4,11 @@ import bg from "../../assets/images/bg.svg";
 
 const ChatContainer = styled.div`
   position: relative;
+  width: 100%;
   background: #fff url(${bg});
+
   @media (min-width: 768px) {
-    max-width: 768px;
+    width: 1024px;
     margin: auto;
     border-radius: 10px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
@@ -53,13 +55,48 @@ const ChatHeader = styled.div`
   }
 `;
 
+const Tip = styled.div`
+  width: 90%;
+  padding: 20px;
+  background: #d7f7fc;
+  margin: 0 auto;
+  border-radius: 5px;
+  font-size: 1em;
+  text-align: center;
+  color: #444;
+
+  & p {
+    margin: 0 auto;
+    text-align: center;
+  }
+`;
+
 const ChatMessages = styled.div`
+  margin-top: 10px;
   height: calc(100vh - 75px);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   padding: 40px 20px 50px 20px;
   overflow-y: auto;
+  border-radius: 5px;
+
+  &::-webkit-scrollbar {
+    scroll-behavior: smooth;
+    width: 10px;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 5px;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: #cd96ff;
+  }
+
   background: linear-gradient(
     180deg,
     rgba(196, 196, 196, 0.1) 6.1%,
@@ -67,6 +104,12 @@ const ChatMessages = styled.div`
   );
   @media (min-width: 768px) {
     padding: 75px 20px 75px 20px;
+  }
+
+  @media (max-width: 768px) {
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 `;
 
@@ -84,6 +127,7 @@ const MessageBubble = styled.div`
     color: #555;
     text-align: left;
     padding: 15px 15px 30px 15px;
+    white-space: pre-line;
   }
 `;
 
@@ -103,8 +147,17 @@ const ChatFooter = styled.div`
     border-radius: 0 0 10px 10px;
   }
   & .message {
+    margin: auto 0;
     width: calc(100% - 80px);
     border: none;
+    resize: none;
+    font-size: 1em;
+    color: #444;
+    font-family: "Roboto", sans-serif;
+
+    &::placeholder {
+      color: #999;
+    }
   }
   & .button {
     width: 45px;
@@ -122,4 +175,11 @@ const ChatFooter = styled.div`
   }
 `;
 
-export { ChatContainer, ChatHeader, ChatMessages, MessageBubble, ChatFooter };
+export {
+  ChatContainer,
+  ChatHeader,
+  ChatMessages,
+  MessageBubble,
+  ChatFooter,
+  Tip,
+};
