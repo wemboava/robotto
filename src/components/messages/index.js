@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
+
 import { ReactMic } from "react-mic";
 import { FaMicrophone } from "react-icons/fa";
 
@@ -9,29 +10,68 @@ import {
   ChatMessages,
   MessageBubble,
   MicButton,
+  Tip,
 } from "./styles";
 
+import { createChat } from "../../services/socket";
 import QuestionBubble from "../questionBubble";
-
-import { useChat } from "../../services/socket";
 
 import SendIcon from "../../assets/images/send-icon.svg";
 import UserImage from "../../assets/images/otto.jpeg";
 
-const Chat = () => {
-  const chat = useChat();
+const chat = createChat();
+const ENTER = 13;
 
+const Chat = () => {
   const [record, setRecord] = useState(false);
   const [audio, setAudio] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const scroll = useRef(null);
+
+  const sendMessage = useCallback(() => {
+    chat.sendMessage({
+      text: newMessage.trim(),
+    });
+
+    setMessages([
+      ...messages,
+      {
+        text: newMessage,
+        yourself: true,
+      },
+    ]);
+  }, [messages, newMessage]);
+
+  function handleMessage(message) {
+    if (message !== "\n") {
+      setNewMessage(message);
+    }
+  }
+
+  function handleSend(pressedKey) {
+    // TODO: Mensagem enviando vazia
+    if (pressedKey.keyCode === ENTER) {
+      sendMessage();
+      setNewMessage("");
+    }
+  }
 
   useEffect(() => {
+    // Scrolla pra baixo sempre
+    scroll.current.scrollTop = scroll.current.scrollHeight;
+
+    // Escutar a resposta do RobOtto
     chat.listen("response", (message) => {
-      // setMessages(message);
-      console.log(message);
+      setMessages([
+        ...messages,
+        {
+          text: message,
+          yourself: false,
+        },
+      ]);
     });
-  }, [chat]);
+  });
 
   const handleRecording = () => {
     setRecord(!record);
@@ -47,15 +87,6 @@ const Chat = () => {
     setAudio(url);
     console.log("recordedBlob is: ", recordedBlob);
   };
-
-  const sendMessage = useCallback(() => {
-    chat.sendMessage({
-      text: newMessage,
-      media: [
-        "https://images.unsplash.com/photo-1593753063521-afa3771f2c81?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80",
-      ],
-    });
-  }, [chat, newMessage]);
 
   return (
     <ChatContainer>
@@ -80,26 +111,21 @@ const Chat = () => {
           </svg>
         </div>
       </ChatHeader>
-      <ChatMessages>
-        <MessageBubble yourself>
-          <p className="message">Olá</p>
-        </MessageBubble>
-        <MessageBubble>
-          <p className="message">
-            Meu nome é Robotto, sou um robô explorador, desculpa, hoje é dia do
-            laser aqui no meu planeta! 🌍Você não é um robô!
-            <br /> Qual o seu nome? 🤔
-          </p>
-        </MessageBubble>
-        <MessageBubble yourself>
-          <p className="message">Sebastião</p>
-        </MessageBubble>
-        <MessageBubble>
-          <QuestionBubble />
-        </MessageBubble>
-        <MessageBubble yourself>
-          <audio controls src={audio} />
-        </MessageBubble>
+
+      <ChatMessages ref={scroll}>
+        {messages.length === 0 ? (
+          <Tip>
+            <p>O RobOtto tá te esperando! Manda uma mensagem!</p>
+          </Tip>
+        ) : null}
+        {messages.map((message, key) => {
+          return (
+            // eslint-disable-next-line react/no-array-index-key
+            <MessageBubble yourself={message.yourself} key={key}>
+              <p className="message">{message.text}</p>
+            </MessageBubble>
+          );
+        })}
       </ChatMessages>
 
       <ChatFooter>
@@ -108,7 +134,8 @@ const Chat = () => {
           placeholder="Escreva uma mensagem..."
           className="message"
           value={newMessage}
-          onChange={(event) => setNewMessage(event.target.value)}
+          onChange={(event) => handleMessage(event.target.value)}
+          onKeyDown={(event) => handleSend(event)}
         />
         <MicButton type="button" onClick={handleRecording} isRecording={record}>
           <FaMicrophone size={20} />
