@@ -8,6 +8,8 @@ import {
   MessageBubble,
 } from "./styles";
 
+import QuestionBubble from "../questionBubble";
+
 import { useChat } from "../../services/socket";
 
 import SendIcon from "../../assets/images/send-icon.svg";
@@ -73,15 +75,7 @@ const Chat = () => {
           <p className="message">Sebastião</p>
         </MessageBubble>
         <MessageBubble>
-          <p className="message">
-            E aí Willian! Vou te colocar na minha lista de prioridades agora
-            mesmo! 📅 Agora me diz, o que você quer fazer?! Podemos ser amigos?!
-            <br />
-            Aahhh, estou tão ansiooooso! <br />
-            Quero ler um livro 📕 <br />
-            Quero descobrir coisas novas 🌎 <br />
-            Quero conversar sobre assuntos legais 😎
-          </p>
+          <QuestionBubble />
         </MessageBubble>
         <MessageBubble yourself>
           <p className="message">Livros</p>
