@@ -1,7 +1,7 @@
 import io from "socket.io-client";
 
 export const createChat = () => {
-  const socket = io("http://localhost:3336");
+  const socket = io("https://mh3-bot.herokuapp.com/");
 
   socket.on("connect", () => {
     console.log("Usuário Conectado");
